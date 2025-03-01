@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Realidad Aumentada con Muñeco 3D</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs="debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+        <a-marker preset="hiro">
+            <a-entity gltf-model="assets/tu_modelo.gltf" position="0 0 0" scale="0.05 0.05 0.05"></a-entity>
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
+    <script src="script.js"></script>
+</body>
+</html>
