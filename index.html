@@ -63,18 +63,54 @@
         // Ocultar la pantalla de carga cuando el modelo esté listo
         modelViewer.addEventListener('load', () => {
             loadingDiv.style.display = 'none';
+            startMovingModel(); // Iniciar el movimiento inmediatamente después de la carga
         });
 
         arButton.addEventListener("click", () => {
             modelViewer.activateAR();
         });
 
-        document.getElementById("modelViewer").addEventListener("scene-visibility", (event) => {
-            if (event.detail.visible) {
-                startMovingModel();
-            }
-        });
-
         function startMovingModel() {
             const modelViewer = document.getElementById("modelViewer");
-            let isJumping
+            let isJumping = false;
+            let positionX = 0; // Posición inicial en el eje X
+            const speed = 0.01; // Velocidad de movimiento
+            const jumpHeight = 0.5; // Altura del salto
+            let velocityY = 0; // Velocidad vertical para el salto
+            const gravity = -0.02; // Gravedad
+
+            function updatePosition() {
+                positionX += speed;
+                modelViewer.setAttribute("position", `${positionX} ${modelViewer.getAttribute("position").y} ${modelViewer.getAttribute("position").z}`);
+
+                if (isJumping) {
+                    velocityY += gravity;
+                    const newY = modelViewer.getAttribute("position").y + velocityY;
+                    if (newY <= 0) {
+                        modelViewer.setAttribute("position", `${positionX} 0 ${modelViewer.getAttribute("position").z}`);
+                        isJumping = false;
+                    } else {
+                        modelViewer.setAttribute("position", `${positionX} ${newY} ${modelViewer.getAttribute("position").z}`);
+                    }
+                }
+
+                requestAnimationFrame(updatePosition);
+            }
+
+            function toggleAnimation() {
+                if (isJumping) {
+                    modelViewer.setAttribute("animation-name", "walk");
+                } else {
+                    modelViewer.setAttribute("animation-name", "jump");
+                    velocityY = jumpHeight; // Inicializar la velocidad del salto
+                    isJumping = true;
+                }
+                setTimeout(toggleAnimation, 3000); // Alternar cada 3 segundos
+            }
+
+            toggleAnimation();
+            updatePosition(); // Iniciar el movimiento continuo
+        }
+    </script>
+</body>
+</html>
