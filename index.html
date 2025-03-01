@@ -6,7 +6,23 @@
     <title>AR con Movimiento Autónomo</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
-        /* ... estilos ... */
+        body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        #ar-button { 
+            position: fixed;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white; 
+            border: 2px solid black; 
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+        }
         #loading { 
             position: fixed; 
             top: 0; 
@@ -17,7 +33,7 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            z-index: 3000; /* Asegúrate de que esté por encima del botón */
+            z-index: 3000;
         }
     </style>
 </head>
@@ -53,7 +69,27 @@
             modelViewer.activateAR();
         });
 
-        // ... (resto del código) ...
+        document.getElementById("modelViewer").addEventListener("scene-visibility", (event) => {
+            if (event.detail.visible) {
+                startMovingModel();
+            }
+        });
+
+        function startMovingModel() {
+            const modelViewer = document.getElementById("modelViewer");
+            let isJumping = false;
+
+            function toggleAnimation() {
+                if (isJumping) {
+                    modelViewer.setAttribute("animation-name", "walk");
+                } else {
+                    modelViewer.setAttribute("animation-name", "jump");
+                }
+                isJumping = !isJumping;
+                setTimeout(toggleAnimation, 3000); // Alternar cada 3 segundos
+            }
+            toggleAnimation();
+        }
     </script>
 </body>
 </html>
